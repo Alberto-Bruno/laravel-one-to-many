@@ -89,6 +89,19 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
+        $request->validate([
+            'title' => 'required|string|unique:post|min:5|max:20',
+            'content' => 'required|string',
+            'image' => 'nullable|url',
+        ], [
+            'title.required' => 'Il titolo è obbligatorio',
+            'title.unique' => "Esiste già un progetto simile $request->title.",
+            'title.min' => 'Il titolo deve avere almeno 5 caratteri',
+            'title.max' => 'Il titolo non deve superare i 20 caratteri',
+            'content.required' => 'Il progetto deve avere un contenuto',
+            'image.url' => 'Le estensioni accettate sono jpeg, jpg, png',
+        ]);
+
         $data = $request->all();
         $data['slug'] = Str::slug($data['title'], '-');
 
